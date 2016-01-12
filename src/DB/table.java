@@ -33,7 +33,7 @@ class SendData {
 @WebServlet("/Ajax10")
 public class table extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private DB.table mOracle;
+	private DB.Oracle mOracle;
 	private final String DB_ID = "x14g019";
 	private final String DB_PASS = "sakura39";
 
@@ -55,12 +55,12 @@ public class table extends HttpServlet {
 			mOracle.connect("ux4", DB_ID, DB_PASS);
 
 			//テーブルが無ければ作成
-			if(!mOracle.isTable("db_exam10"))
+			if(!mOracle.isTable("main_table"))
 			{
-				mOracle.execute("create table db_exam10(日付 date,カテゴリ varchar2(20),概要 varchar2(80),金額 int )");
+				mOracle.execute("create table db_exam10(ユーザID varchar2(10),レコード番号 int(10),日付 date,カテゴリ int(4),概要 varchar2(80),金額 int )");
 				mOracle.execute("create sequence db_exam10_seq");
-			
-		} catch (Exception e) {
+				}
+			} catch (Exception e) {
 			System.err.println("認証に失敗しました");
 		}
 	}
