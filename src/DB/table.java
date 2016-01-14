@@ -22,15 +22,16 @@ class RecvData {
 }
 
 class SendData {
-	public String name;
-	public String msg;
-	public int id;
+	public String Kategori;
+	public String Gaiyou;
+	public int Kingaku;
+	public int cmd;
 }
 
 /**
  * Servlet implementation class Ajax10
  */
-@WebServlet("/Ajax10")
+@WebServlet("/table")
 public class table extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private DB.Oracle mOracle;
@@ -49,18 +50,18 @@ public class table extends HttpServlet {
 		// TODO 自動生成されたメソッド・スタブ
 		super.init();
 
-
-		try{
+		try {
 			mOracle = new Oracle();
+			System.out.println("テーブル作成中");
 			mOracle.connect("ux4", DB_ID, DB_PASS);
 
-			//テーブルが無ければ作成
-			if(!mOracle.isTable("main_table"))
-			{
-				mOracle.execute("create table db_exam10(ユーザID varchar2(10),レコード番号 int(10),日付 date,カテゴリ int(4),概要 varchar2(80),金額 int )");
-				mOracle.execute("create sequence db_exam10_seq");
-				}
-			} catch (Exception e) {
+			// テーブルが無ければ作成
+			if (!mOracle.isTable("main_table")) {
+				mOracle.execute("create table main_table(レコード番号 int, ユーザID varchar2(10) ,日付 date,カテゴリ int,概要 varchar2(80),金額 int)");
+				mOracle.execute("create sequence main_table_SeqID");
+			}
+			
+		} catch (Exception e) {
 			System.err.println("認証に失敗しました");
 		}
 	}
@@ -99,26 +100,31 @@ public class table extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		// データの受け取り処理
+		System.out.println("データ受け取り");
 		RecvData recvData = JSON.decode(request.getInputStream(),
 				RecvData.class);
 		if ("write".equals(recvData.cmd)) {
 			// 書き込み処理
+		System.out.println("データ書き込み");
 			String sql = String
-					.format("insert into db_exam10 values(db_exam10_seq.nextval,'%s','%s')",
-							recvData.Kategori, recvData.Gaiyou,recvData.Kingaku);
+					.format("insert into main_table values(main_table_seq.nextval,'%s','%s')",
+							recvData.Kategori, recvData.Gaiyou,
+							recvData.Kingaku);
 			mOracle.execute(sql);
 		}
 
 		try {
 			// データの送信処理
+			System.out.println("データ送信");
 			ArrayList<SendData> list = new ArrayList<SendData>();
 			ResultSet res = mOracle
-					.query("select * from db_exam10 order by id");
+					.query("select * from main_table order by id");
 			while (res.next()) {
 				SendData sendData = new SendData();
-				sendData.id = res.getInt(1);
-				sendData.name = res.getString(2);
-				sendData.msg = res.getString(3);
+				sendData.Kategori = res.getString(1);
+				sendData.Gaiyou = res.getString(2);
+				sendData.Kingaku = res.getInt(3);
+				sendData.cmd = res.getInt(4);
 				list.add(sendData);
 			}
 			// JSON形式に変換
