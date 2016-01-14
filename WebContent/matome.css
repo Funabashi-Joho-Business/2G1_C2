@@ -8,13 +8,28 @@ nav{
 
 table	{
 	margin-left:30px; width:700px; border-collapse:collapse;
+	margin-right : auto;
+	margin-left : auto
 	}
 thead	{
 	background-color:#8b0000; color:#fff;
 	}
 tbody th{
 	text-align:left; background-color:#ff4500;
-}
+	}
 tr,th,td{
 	border:solid 1px #000;
 	}
+
+#button{
+	text-align : center ;
+	}
+	#tug{
+	text-align : right ;
+	}
+
+
+
+
+
+
