@@ -52,15 +52,17 @@ public class table extends HttpServlet {
 
 		try {
 			mOracle = new Oracle();
-			System.out.println("テーブル作成中");
 			mOracle.connect("ux4", DB_ID, DB_PASS);
 
 			// テーブルが無ければ作成
 			if (!mOracle.isTable("main_table")) {
-				mOracle.execute("create table main_table(レコード番号 int, ユーザID varchar2(10) ,日付 date,カテゴリ int,概要 varchar2(80),金額 int)");
+				mOracle.execute("create table main_table(レコード番号 int,ユーザID varchar2(10),日付 date,カテゴリ int,概要 varchar2(80),金額 int)");
 				mOracle.execute("create sequence main_table_SeqID");
 			}
-			
+			if (!mOracle.isTable("Kategori_table")) {
+				mOracle.execute("create table Kategori_table(カテゴリID　int,ユーザID varchar2(10),カテゴリ名  varchar2(20))");
+				mOracle.execute("create sequence Kategori_table_SeqID");
+			}
 		} catch (Exception e) {
 			System.err.println("認証に失敗しました");
 		}
@@ -100,12 +102,11 @@ public class table extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		// データの受け取り処理
-		System.out.println("データ受け取り");
 		RecvData recvData = JSON.decode(request.getInputStream(),
 				RecvData.class);
 		if ("write".equals(recvData.cmd)) {
 			// 書き込み処理
-		System.out.println("データ書き込み");
+			System.out.println("データ書き込み");
 			String sql = String
 					.format("insert into main_table values(main_table_seq.nextval,'%s','%s')",
 							recvData.Kategori, recvData.Gaiyou,
@@ -115,7 +116,6 @@ public class table extends HttpServlet {
 
 		try {
 			// データの送信処理
-			System.out.println("データ送信");
 			ArrayList<SendData> list = new ArrayList<SendData>();
 			ResultSet res = mOracle
 					.query("select * from main_table order by id");
