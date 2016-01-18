@@ -3,8 +3,9 @@ package DB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -68,7 +69,13 @@ public class table extends HttpServlet {
 		}
 	}
 	void insertData(String user,Date hiduke, int kategori, String gaiyou, int kingaku){
-		
+		String sql;
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmm");
+		String dateStr = format.format(hiduke);		
+		sql = String.format("insert into main_table values(main_table_SeqID.nextval,'%s',to_date('%s','yyyy/mm/dd hh24:mi:ss'),%d,'%s',%d)",
+				user,dateStr,kategori,gaiyou,kingaku);
+		System.out.println(sql);
+		mOracle.execute(sql);
 	}
 	@Override
 	public void destroy() {
@@ -98,25 +105,22 @@ public class table extends HttpServlet {
 
 	private void action(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
+		
 		// 出力ストリームの作成
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/plain; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 
-		// データの受け取り処理
-		RecvData recvData = JSON.decode(request.getInputStream(),
-				RecvData.class);
-		if ("write".equals(recvData.cmd)) {
-			// 書き込み処理
-			System.out.println("データ書き込み");
-			String sql = String
-					.format("insert into main_table values(main_table_seq.nextval,'%s','%s')",
-							recvData.Kategori, recvData.Gaiyou,
-							recvData.Kingaku);
-			mOracle.execute(sql);
-		}
-
 		try {
+			// データの受け取り処理
+			RecvData recvData = JSON.decode(request.getInputStream(),
+					RecvData.class);
+			if ("write".equals(recvData.cmd)) {
+				// 書き込み処理
+				//サンプル
+				Date d = new Date();
+				insertData("x14g000",d,0,"テスト",100);			}
+
 			// データの送信処理
 			ArrayList<SendData> list = new ArrayList<SendData>();
 			ResultSet res = mOracle
@@ -133,7 +137,7 @@ public class table extends HttpServlet {
 			String json = JSON.encode(list);
 			// 出力
 			out.println(json);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
