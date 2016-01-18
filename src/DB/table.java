@@ -67,7 +67,9 @@ public class table extends HttpServlet {
 			System.err.println("認証に失敗しました");
 		}
 	}
-
+	void insertData(String user,Date hiduke, int kategori, String gaiyou, int kingaku){
+		
+	}
 	@Override
 	public void destroy() {
 		// DB切断
