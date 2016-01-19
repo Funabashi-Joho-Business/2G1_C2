@@ -391,6 +391,8 @@
 		AFL.sendJson("https://www.google.com/calendar/feeds/" + account +
 			"/public/basic?start-min=" + s + "&start-max=" + e + "&max-results=30&alt=json", null,
 			function (data) {
+				if(!data)
+					return;
 				var holidays = {};
 				var entry = data.feed.entry;
 				for (var index in entry) {
