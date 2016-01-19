@@ -10,7 +10,7 @@ table	{
 	margin-left:30px; width:700px; border-collapse:collapse;
 	margin-right : auto;
 	margin-left : auto
-	}
+		}
 thead	{
 	background-color:#8b0000; color:#fff;
 	}
@@ -24,9 +24,14 @@ tr,th,td{
 #button{
 	text-align : center ;
 	}
-	#tug{
+#tug{
 	text-align : right ;
 	}
+#top{
+	margin: 0.5px auto;
+	width: 700px;
+
+}
 
 
 
