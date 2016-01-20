@@ -16,17 +16,19 @@ import javax.servlet.http.HttpServletResponse;
 import net.arnx.jsonic.JSON;
 
 class RecvData {
-	public String Kategori;
+	public Date date;
+	public int Kategori;
 	public String Gaiyou;
 	public int Kingaku;
-	public int cmd;
+	public String cmd;
+	public String User;
 }
 
 class SendData {
 	public String Kategori;
 	public String Gaiyou;
 	public int Kingaku;
-	public int cmd;
+	public String cmd;
 }
 
 /**
@@ -118,19 +120,19 @@ public class table extends HttpServlet {
 			if ("write".equals(recvData.cmd)) {
 				// 書き込み処理
 				//サンプル
-				Date d = new Date();
-				insertData("x14g000",d,0,"テスト",100);			}
+				insertData(recvData.User,recvData.date,recvData.Kategori,recvData.Gaiyou,recvData.Kingaku);	
+			}
 
 			// データの送信処理
 			ArrayList<SendData> list = new ArrayList<SendData>();
 			ResultSet res = mOracle
-					.query("select * from main_table order by id");
+					.query("select * from main_table order by 日付 desc");
 			while (res.next()) {
 				SendData sendData = new SendData();
 				sendData.Kategori = res.getString(1);
 				sendData.Gaiyou = res.getString(2);
 				sendData.Kingaku = res.getInt(3);
-				sendData.cmd = res.getInt(4);
+				sendData.cmd = res.getString(4);
 				list.add(sendData);
 			}
 			// JSON形式に変換
