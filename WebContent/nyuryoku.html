@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title></title>
+<meta name="author" content="">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" href="matome.css">
+<script type="text/javascript" src="Scripts/AflLib.js"></script>
+<script type="text/javascript" src="Scripts/bt.js"></script>
+<!--[if IE]><script src="js/html5shiv.js"></script><![endif]-->
+</head>
+<body>
+
+<div id ="top">
+<table>
+		<thead>
+		<tr>
+			<th>日付</th>
+			<th>カテゴリ</th>
+			<th>金額</th>
+			<th>詳細</th>
+		</tr>
+		</thead>
+		<tr>
+			<td><input type="text" size="20" maxlength="10" name="day" value="" id="day"></td>
+			<td><select name="Category" id="Cat">
+				<option value="1">電気代</option>
+				<option value="2">水道代</option>
+				<option value="3">ガス代</option>
+				<option value="4">遊び</option>
+				<option value="5">食費</option>
+				</select></td>
+			<td><input type="text" size="20" maxlength="20" name="price" value="" id="price"></td>
+			<td><input type="text" size="20" maxlength="100" name="syousai" value="" id="syousai"></td>
+		</tr>
+	</table>
+
+
+	<div id = "button"><input type="submit" value="入力"id="bt"></div>
+
+	<div id = "tug"><a href="top.html">まとめ</a></div>
+	</div>
+
+	<div id="output" style="background-color:red;color:white;height:10em"></div>
+
+</body>
+</html>
