@@ -37,16 +37,17 @@ function Main()
 	button.addEventListener("click",onClick);
 	function onClick()
 	{
-		output.innerHTML = "bb"+data1.value + data2.value + data3.value + data4.value;
+		output.innerHTML = data1.value + data2.value + data3.value + data4.value;
 	
 		//データ送信処理
 		var sendData = {};
 		sendData.cmd = "write";
 		sendData.date = data1.value;
-		sendData.cat = data2.value;
-		sendData.money = data3.value;
-		sendData.info = data4.value;
-		AFL.sendJson("アドレス",sendData,onRecv);
+		sendData.Kategori = data2.value;
+		sendData.Kingaku = data3.value;
+		sendData.Gaiyou = data4.value;
+		sendData.User = "x14g009";
+		AFL.sendJson("table",sendData,onRecv);
 		function onRecv(data){
 			if(data)
 				alert("送信成功");

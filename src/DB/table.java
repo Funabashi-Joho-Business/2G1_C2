@@ -16,17 +16,21 @@ import javax.servlet.http.HttpServletResponse;
 import net.arnx.jsonic.JSON;
 
 class RecvData {
-	public String Kategori;
+	public Date date;
+	public int Kategori;
 	public String Gaiyou;
 	public int Kingaku;
-	public int cmd;
+	public String cmd;
+	public String User;
 }
 
 class SendData {
-	public String Kategori;
+	public Date date;
+	public String User;
+	public int Kategori;
 	public String Gaiyou;
 	public int Kingaku;
-	public int cmd;
+	public String cmd;
 }
 
 /**
@@ -57,12 +61,21 @@ public class table extends HttpServlet {
 
 			// テーブルが無ければ作成
 			if (!mOracle.isTable("main_table")) {
+				mOracle.execute("drop sequence Main_table_SeqID");
 				mOracle.execute("create table main_table(レコード番号 int,ユーザID varchar2(10),日付 date,カテゴリ int,概要 varchar2(80),金額 int)");
 				mOracle.execute("create sequence main_table_SeqID");
 			}
+			//カテゴリテーブル作成
 			if (!mOracle.isTable("Kategori_table")) {
+				mOracle.execute("drop sequence Kategori_table_SeqID");
 				mOracle.execute("create table Kategori_table(カテゴリID　int,ユーザID varchar2(10),カテゴリ名  varchar2(20))");
 				mOracle.execute("create sequence Kategori_table_SeqID");
+				//デフォルトで存在するカテゴリを入れる
+				mOracle.execute("insert into Kategori_table values(Kategori_table_SeqID.nextval,'default','電気代')");
+				mOracle.execute("insert into Kategori_table values(Kategori_table_SeqID.nextval,'default','水道代')");
+				mOracle.execute("insert into Kategori_table values(Kategori_table_SeqID.nextval,'default','ガス代')");
+				mOracle.execute("insert into Kategori_table values(Kategori_table_SeqID.nextval,'default','遊び')");
+				mOracle.execute("insert into Kategori_table values(Kategori_table_SeqID.nextval,'default','食事')");
 			}
 		} catch (Exception e) {
 			System.err.println("認証に失敗しました");
@@ -118,19 +131,21 @@ public class table extends HttpServlet {
 			if ("write".equals(recvData.cmd)) {
 				// 書き込み処理
 				//サンプル
-				Date d = new Date();
-				insertData("x14g000",d,0,"テスト",100);			}
+				insertData(recvData.User,recvData.date,recvData.Kategori,recvData.Gaiyou,recvData.Kingaku);	
+			}
 
 			// データの送信処理
 			ArrayList<SendData> list = new ArrayList<SendData>();
 			ResultSet res = mOracle
-					.query("select * from main_table order by id");
+					.query("select * from main_table order by 日付 desc");
 			while (res.next()) {
 				SendData sendData = new SendData();
-				sendData.Kategori = res.getString(1);
-				sendData.Gaiyou = res.getString(2);
-				sendData.Kingaku = res.getInt(3);
-				sendData.cmd = res.getInt(4);
+				sendData.date = res.getDate(1);
+				sendData.User = res.getString(2);
+				sendData.Kategori = res.getInt(3);
+				sendData.Gaiyou = res.getString(4);
+				sendData.Kingaku = res.getInt(5);
+				sendData.cmd = res.getString(6);
 				list.add(sendData);
 			}
 			// JSON形式に変換
