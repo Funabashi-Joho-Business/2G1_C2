@@ -25,6 +25,8 @@ class RecvData {
 }
 
 class SendData {
+	public Date date;
+	public String User;
 	public String Kategori;
 	public String Gaiyou;
 	public int Kingaku;
@@ -59,12 +61,21 @@ public class table extends HttpServlet {
 
 			// テーブルが無ければ作成
 			if (!mOracle.isTable("main_table")) {
+				mOracle.execute("drop sequence Main_table_SeqID");
 				mOracle.execute("create table main_table(レコード番号 int,ユーザID varchar2(10),日付 date,カテゴリ int,概要 varchar2(80),金額 int)");
 				mOracle.execute("create sequence main_table_SeqID");
 			}
+			//カテゴリテーブル作成
 			if (!mOracle.isTable("Kategori_table")) {
+				mOracle.execute("drop sequence Kategori_table_SeqID");
 				mOracle.execute("create table Kategori_table(カテゴリID　int,ユーザID varchar2(10),カテゴリ名  varchar2(20))");
 				mOracle.execute("create sequence Kategori_table_SeqID");
+				//デフォルトで存在するカテゴリを入れる
+				mOracle.execute("insert into Kategori_table values(Kategori_table_SeqID.nextval,'default','電気代')");
+				mOracle.execute("insert into Kategori_table values(Kategori_table_SeqID.nextval,'default','水道代')");
+				mOracle.execute("insert into Kategori_table values(Kategori_table_SeqID.nextval,'default','ガス代')");
+				mOracle.execute("insert into Kategori_table values(Kategori_table_SeqID.nextval,'default','遊び')");
+				mOracle.execute("insert into Kategori_table values(Kategori_table_SeqID.nextval,'default','食事')");
 			}
 		} catch (Exception e) {
 			System.err.println("認証に失敗しました");
@@ -126,13 +137,14 @@ public class table extends HttpServlet {
 			// データの送信処理
 			ArrayList<SendData> list = new ArrayList<SendData>();
 			ResultSet res = mOracle
-					.query("select * from main_table order by 日付 desc");
+					.query("select レコード番号,main_table.ユーザID,日付,カテゴリ名,概要,金額 from main_table join kategori_table on カテゴリ = カテゴリID order by 日付 desc");
 			while (res.next()) {
 				SendData sendData = new SendData();
-				sendData.Kategori = res.getString(1);
-				sendData.Gaiyou = res.getString(2);
-				sendData.Kingaku = res.getInt(3);
-				sendData.cmd = res.getString(4);
+				sendData.User = res.getString(2);
+				sendData.date = res.getDate(3);
+				sendData.Kategori = res.getString(4);
+				sendData.Gaiyou = res.getString(5);
+				sendData.Kingaku = res.getInt(6);
 				list.add(sendData);
 			}
 			// JSON形式に変換
