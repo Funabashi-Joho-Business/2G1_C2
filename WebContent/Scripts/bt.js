@@ -61,7 +61,7 @@ function Main()
 //			public String cmd;
 //			public String User;
 			//テーブルのクリア
-			if(output.rows.length > 1)
+			while(output.rows.length > 1)
 				output.deleteRow(1);
 			for(var index in datas){
 				var data = datas[index];
