@@ -11,14 +11,14 @@ table	{
 	margin-right : auto;
 	margin-left : auto
 		}
-thead	{
+th	{
 	background-color:#8b0000; color:#fff;
 	}
 tbody th{
 	text-align:left; background-color:#ff4500;
 	}
 tr,th,td{
-	border:solid 1px #000;
+	border:solid 1px #000 ;
 	}
 
 #button{

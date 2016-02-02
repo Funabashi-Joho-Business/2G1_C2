@@ -27,7 +27,7 @@ class RecvData {
 class SendData {
 	public Date date;
 	public String User;
-	public int Kategori;
+	public String Kategori;
 	public String Gaiyou;
 	public int Kingaku;
 	public String cmd;
@@ -137,15 +137,14 @@ public class table extends HttpServlet {
 			// データの送信処理
 			ArrayList<SendData> list = new ArrayList<SendData>();
 			ResultSet res = mOracle
-					.query("select * from main_table order by 日付 desc");
+					.query("select レコード番号,main_table.ユーザID,日付,カテゴリ名,概要,金額 from main_table join kategori_table on カテゴリ = カテゴリID order by 日付 desc");
 			while (res.next()) {
 				SendData sendData = new SendData();
-				sendData.date = res.getDate(1);
 				sendData.User = res.getString(2);
-				sendData.Kategori = res.getInt(3);
-				sendData.Gaiyou = res.getString(4);
-				sendData.Kingaku = res.getInt(5);
-				sendData.cmd = res.getString(6);
+				sendData.date = res.getDate(3);
+				sendData.Kategori = res.getString(4);
+				sendData.Gaiyou = res.getString(5);
+				sendData.Kingaku = res.getInt(6);
 				list.add(sendData);
 			}
 			// JSON形式に変換

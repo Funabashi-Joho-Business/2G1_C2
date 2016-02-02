@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", Main, false);
 
 function Main()
 {
-	var output = document.querySelector("div#output");
+	var output = document.querySelector("table#output");
 	var data1 = document.querySelector("input#day");
 	var data2 = document.querySelector("select#Cat");
 	var data3 = document.querySelector("input#price");
@@ -37,8 +37,6 @@ function Main()
 	button.addEventListener("click",onClick);
 	function onClick()
 	{
-		output.innerHTML = data1.value + data2.value + data3.value + data4.value;
-	
 		//データ送信処理
 		var sendData = {};
 		sendData.cmd = "write";
@@ -48,12 +46,46 @@ function Main()
 		sendData.Gaiyou = data4.value;
 		sendData.User = "x14g009";
 		AFL.sendJson("table",sendData,onRecv);
-		function onRecv(data){
-			if(data)
-				alert("送信成功");
-			else
-				alert("送信失敗");
-		}
-
 	}
+	
+	var sendData = {};
+	sendData.cmd = "read";
+	AFL.sendJson("table",sendData,onRecv);
+
+	function onRecv(datas){
+		if(datas){
+//			public Date date;
+//			public int Kategori;
+//			public String Gaiyou;
+//			public int Kingaku;
+//			public String cmd;
+//			public String User;
+			//テーブルのクリア
+			while(output.rows.length > 1)
+				output.deleteRow(1);
+			for(var index in datas){
+				var data = datas[index];
+				var row = output.insertRow(-1);
+				
+				var date = new Date(data.date);
+				var y = date.getFullYear();
+				var m = date.getMonth()+1;
+				var d = date.getDate();
+				
+				var cell;
+				cell = row.insertCell(-1);
+				cell.innerHTML = AFL.sprintf("%d年%02d月%02d日",y,m,d);
+				cell = row.insertCell(-1);
+				cell.innerHTML = data.Kategori;
+				cell = row.insertCell(-1);
+				cell.innerHTML = data.Kingaku + "円";
+				cell = row.insertCell(-1);
+				cell.innerHTML = data.Gaiyou;
+
+				//alert(d.Kingaku);
+			}
+		}
+		else
+			alert("送信失敗");
+	}	
 }
